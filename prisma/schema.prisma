@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum SyncStatus {
+  OPEN
+  FULL
+  CANCELLED
+  COMPLETED
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id           String  @id @default(cuid())
+  name         String
+  email        String  @unique
+  phoneNumber  String? @unique
+  profileImage String?
+  gender       Gender
+  company      String?
+  isVerified   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  syncs    Sync[]
+  requests SyncRequest[]
+  messages Message[]
+}
+
+model Sync {
+  id String @id @default(cuid())
+
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id])
+
+  fromLocation String
+  toLocation   String
+
+  syncDate      DateTime
+  departureTime DateTime
+
+  seatsRequired Int
+  acceptedSeats Int @default(0)
+
+  womenOnly Boolean @default(false)
+
+  notes String?
+
+  status SyncStatus @default(OPEN)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  requests SyncRequest[]
+  chatRoom ChatRoom?
+}
+
+model SyncRequest {
+  id String @id @default(cuid())
+
+  syncId String
+  sync   Sync   @relation(fields: [syncId], references: [id])
+
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id])
+
+  status RequestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+
+  @@unique([syncId, senderId])
+}
+
+model ChatRoom {
+  id String @id @default(cuid())
+
+  syncId String @unique
+  sync   Sync   @relation(fields: [syncId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  messages Message[]
+}
+
+model Message {
+  id String @id @default(cuid())
+
+  chatRoomId String
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
+
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id])
+
+  content String
+
+  createdAt DateTime @default(now())
+}
