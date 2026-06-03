@@ -18,7 +18,6 @@ enum SyncStatus {
   OPEN
   FULL
   CANCELLED
-  COMPLETED
 }
 
 enum RequestStatus {
