@@ -166,3 +166,296 @@ export async function searchSyncs(
 
   return syncs;
 }
+
+
+export async function requestToJoinSync(
+  syncId: string,
+  senderId: string
+) {
+  const sync = await prisma.sync.findUnique({
+    where: {
+      id: syncId,
+    },
+  });
+
+  if (!sync) {
+    throw new Error("SYNC_NOT_FOUND");
+  }
+
+  if (sync.creatorId === senderId) {
+    throw new Error(
+      "CANNOT_REQUEST_OWN_SYNC"
+    );
+  }
+
+  if (sync.status !== "OPEN") {
+    throw new Error(
+      "SYNC_NOT_OPEN"
+    );
+  }
+
+  const existingRequest =
+    await prisma.syncRequest.findUnique({
+      where: {
+        syncId_senderId: {
+          syncId,
+          senderId,
+        },
+      },
+    });
+
+  if (existingRequest) {
+    throw new Error(
+      "REQUEST_ALREADY_EXISTS"
+    );
+  }
+
+  const request =
+    await prisma.syncRequest.create({
+      data: {
+        syncId,
+        senderId,
+      },
+    });
+
+  return request;
+}
+
+export async function getMySyncs(
+  creatorId: string
+) {
+  const syncs =
+    await prisma.sync.findMany({
+      where: {
+        creatorId,
+      },
+
+      orderBy: {
+        departureTime: "asc",
+      },
+
+      include: {
+        requests: {
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                isVerified: true,
+              },
+            },
+          },
+
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+
+  return syncs;
+}
+
+export async function acceptRequest(
+  requestId: string,
+  currentUserId: string
+
+) {
+const request =
+  await prisma.syncRequest.findUnique({
+    where: {
+      id: requestId,
+    },
+
+    include: {
+      sync: true,
+      sender: true,
+    },
+  });
+
+if (!request) {
+  throw new Error(
+    "REQUEST_NOT_FOUND"
+  );
+}
+if (
+  request.sync.creatorId !==
+  currentUserId
+) {
+  throw new Error(
+    "NOT_SYNC_OWNER"
+  );
+}
+if (
+  request.status !== "PENDING"
+) {
+  throw new Error(
+    "REQUEST_NOT_PENDING"
+  );
+}
+if (
+  request.sync.status ===
+  "FULL"
+) {
+  throw new Error(
+    "SYNC_ALREADY_FULL"
+  );
+}
+return prisma.$transaction(
+  async (tx) => {
+    await tx.syncRequest.update({
+      where: {
+        id: requestId,
+      },
+
+      data: {
+        status: "ACCEPTED",
+      },
+    });
+
+    const updatedSync =
+      await tx.sync.update({
+        where: {
+          id: request.syncId,
+        },
+
+        data: {
+          acceptedSeats: {
+            increment: 1,
+          },
+        },
+      });
+
+    if (
+      updatedSync.acceptedSeats >=
+      updatedSync.seatsRequired
+    ) {
+      await tx.sync.update({
+        where: {
+          id: request.syncId,
+        },
+
+        data: {
+          status: "FULL",
+        },
+      });
+
+      await tx.syncRequest.updateMany({
+        where: {
+          syncId: request.syncId,
+
+          status: "PENDING",
+        },
+
+        data: {
+          status: "REJECTED",
+        },
+      });
+    }
+
+    await tx.syncRequest.updateMany({
+      where: {
+        senderId: request.senderId,
+
+        id: {
+          not: requestId,
+        },
+
+        status: "PENDING",
+      },
+
+      data: {
+        status: "REJECTED",
+      },
+    });
+
+    return {
+      success: true,
+    };
+  }
+);
+}
+
+export async function rejectRequest(
+  requestId: string,
+  currentUserId: string
+) {
+  const request =
+    await prisma.syncRequest.findUnique({
+      where: {
+        id: requestId,
+      },
+
+      include: {
+        sync: true,
+      },
+    });
+
+  if (!request) {
+    throw new Error(
+      "REQUEST_NOT_FOUND"
+    );
+  }
+
+  if (
+    request.sync.creatorId !==
+    currentUserId
+  ) {
+    throw new Error(
+      "NOT_SYNC_OWNER"
+    );
+  }
+
+  if (
+    request.status !== "PENDING"
+  ) {
+    throw new Error(
+      "REQUEST_NOT_PENDING"
+    );
+  }
+
+  await prisma.syncRequest.update({
+    where: {
+      id: requestId,
+    },
+
+    data: {
+      status: "REJECTED",
+    },
+  });
+
+  return {
+    success: true,
+  };
+}
+
+export async function getMyRequests(
+  userId: string
+) {
+  const requests =
+    await prisma.syncRequest.findMany({
+      where: {
+        senderId: userId,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+
+      include: {
+        sync: {
+          include: {
+            creator: {
+              select: {
+                id: true,
+                name: true,
+                isVerified: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+  return requests;
+}
