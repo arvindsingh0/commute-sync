@@ -130,6 +130,185 @@
 }
 
 @layer components {
+  .landing-navbar {
+    position: relative;
+    z-index: 30;
+    background: #fff;
+    box-shadow: 0 1px 12px rgb(15 23 42 / 8%);
+  }
+
+  .landing-navbar-inner {
+    display: flex;
+    min-height: 80px;
+    width: min(100% - 32px, 80rem);
+    margin-inline: auto;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .landing-brand {
+    color: #0f172a;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .landing-auth-button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    padding: 8px 16px;
+    color: #2563eb;
+    font-size: 16px;
+    font-weight: 700;
+    box-shadow: 0 1px 8px rgb(15 23 42 / 6%);
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .landing-auth-button:hover {
+    border-color: #bfdbfe;
+    box-shadow: 0 8px 24px rgb(37 99 235 / 12%);
+  }
+
+  .landing-auth-button svg {
+    width: 28px;
+    height: 28px;
+    color: #7c3aed;
+  }
+
+  .account-menu {
+    position: relative;
+  }
+
+  .account-trigger {
+    display: inline-flex;
+    min-height: 56px;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+    padding: 8px 18px 8px 10px;
+    color: #18181b;
+    font-size: 18px;
+    font-weight: 650;
+    box-shadow: 0 1px 8px rgb(15 23 42 / 6%);
+  }
+
+  .account-avatar {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border-radius: 999px;
+    background: #ede9fe;
+    color: #7c3aed;
+  }
+
+  .account-avatar svg,
+  .account-chevron {
+    width: 24px;
+    height: 24px;
+  }
+
+  .account-chevron {
+    color: #7c3aed;
+  }
+
+  .account-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 40;
+    display: grid;
+    min-width: 260px;
+    gap: 4px;
+    border-radius: 14px;
+    background: #fff;
+    padding: 18px;
+    box-shadow: 0 28px 70px rgb(15 23 42 / 18%);
+  }
+
+  .account-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: 10px;
+    padding: 16px 14px;
+    color: #27272a;
+    font-size: 18px;
+    font-weight: 550;
+    text-decoration: none;
+  }
+
+  .account-dropdown-item:hover {
+    background: #f5f3ff;
+  }
+
+  .account-dropdown-item svg {
+    width: 24px;
+    height: 24px;
+    color: #6d28d9;
+  }
+
+  @media (max-width: 560px) {
+    .landing-navbar-inner {
+      min-height: 72px;
+      width: min(100% - 24px, 80rem);
+    }
+
+    .landing-brand {
+      font-size: 24px;
+    }
+
+    .landing-auth-button {
+      min-height: 44px;
+      padding-inline: 12px;
+      font-size: 14px;
+    }
+
+    .landing-auth-button svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .account-trigger {
+      min-height: 48px;
+      gap: 8px;
+      padding: 6px 12px 6px 8px;
+      font-size: 14px;
+    }
+
+    .account-avatar {
+      width: 34px;
+      height: 34px;
+    }
+
+    .account-avatar svg,
+    .account-chevron {
+      width: 20px;
+      height: 20px;
+    }
+
+    .account-dropdown {
+      right: -4px;
+      min-width: min(260px, calc(100vw - 32px));
+      padding: 12px;
+    }
+
+    .account-dropdown-item {
+      padding: 14px 12px;
+      font-size: 16px;
+    }
+  }
+
   .home-hero {
     position: relative;
     height: 360px;

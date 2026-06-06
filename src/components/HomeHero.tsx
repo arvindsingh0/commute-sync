@@ -4,10 +4,10 @@ export default function HomeHero() {
   return (
     <section className="home-hero">
       <Image
-        src="/HeroImageHD.jpg"
+        src="/HeroImageHQ.jpg"
         alt="CommuteSync Hero"
-        width={2560}
-        height={974}
+        width={3840}
+        height={1461}
         className="home-hero-image"
         priority
       />
