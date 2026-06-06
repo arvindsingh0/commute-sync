@@ -11,7 +11,13 @@ export const signupSchema = z.object({
     .string()
     .trim()
     .email("Invalid email address"),
-
+    
+  phoneNumber: z
+  .string()
+  .regex(
+    /^[6-9]\d{9}$/,
+    "Invalid phone number"
+  ),
   password: z
   .string()
   .min(6, "Password must be at least 6 characters")

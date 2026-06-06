@@ -8,7 +8,22 @@ import {
 import { SignupInput } from "@/validations/auth.validation";
 import { LoginInput } from "@/validations/login.validation";
 
+
+
 export async function createUser(data: SignupInput) {
+  const existingPhone =
+  await prisma.user.findUnique({
+    where: {
+      phoneNumber:
+        data.phoneNumber,
+    },
+  });
+
+if (existingPhone) {
+  throw new Error(
+    "PHONE_ALREADY_EXISTS"
+  );
+}
   const existingUser = await prisma.user.findUnique({
     where: {
       email: data.email,
@@ -24,12 +39,16 @@ export async function createUser(data: SignupInput) {
   );
 
   const user = await prisma.user.create({
-    data: {
-      name: data.name,
-      email: data.email,
-      password: hashedPassword,
-      gender: "PREFER_NOT_TO_SAY",
-    },
+  data: {
+  name: data.name,
+  email: data.email,
+  phoneNumber:
+    data.phoneNumber,
+  password:
+    hashedPassword,
+  gender:
+    "PREFER_NOT_TO_SAY",
+   },
   });
 
   return user;
