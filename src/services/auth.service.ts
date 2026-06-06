@@ -47,7 +47,7 @@ if (existingPhone) {
   password:
     hashedPassword,
   gender:
-    "PREFER_NOT_TO_SAY",
+    data.gender,
    },
   });
 
