@@ -42,8 +42,6 @@ export default function CreateSyncPage()
 
     const date = new Date();
 
-
-
     date.setDate(
 
       date.getDate() + index
@@ -77,9 +75,7 @@ export default function CreateSyncPage()
 
     return {
 
-      value:
-
-        date.toISOString(),
+      value: date.toISOString().split("T")[0],
 
       label: `${date.getDate()} - ${label}`,
 
@@ -108,7 +104,18 @@ async function handleSubmit(
       Number(hours),
       Number(minutes)
     );
-
+      console.log(
+  JSON.stringify({
+    fromLocation,
+    toLocation,
+    syncDate,
+    departureTime:
+      selectedDate.toISOString(),
+    seatsRequired,
+    womenOnly,
+    notes,
+  }, null, 2)
+);
     const response = await fetch(
       "/api/syncs",
       {
@@ -139,6 +146,7 @@ async function handleSubmit(
 
     const data =
       await response.json();
+      console.log(data);
 
     if (!response.ok) {
       setError(
@@ -329,7 +337,7 @@ async function handleSubmit(
             ? "Creating..."
             : "Create Sync"}
         </button>
-        
+
           </form>
         </div>
       </main>
