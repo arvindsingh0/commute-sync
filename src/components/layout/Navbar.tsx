@@ -37,6 +37,13 @@ export default function Navbar() {
         // Keep the landing page in the logged-out state if the session check fails.
       }
     }
+    async function handleLogout() {
+  await fetch("/api/auth/logout", {
+    method: "POST",
+  });
+
+  window.location.href = "/";
+}
 
     loadUser();
 
@@ -44,6 +51,14 @@ export default function Navbar() {
       isMounted = false;
     };
   }, []);
+
+async function handleLogout() {
+  await fetch("/api/auth/logout", {
+    method: "POST",
+  });
+
+  window.location.href = "/";
+}
 
   return (
     <nav className="landing-navbar">
@@ -84,6 +99,14 @@ export default function Navbar() {
                   <Route aria-hidden="true" />
                   <span>My Syncs</span>
                 </Link>
+
+                <button
+                type="button"
+                onClick={handleLogout}
+                className="account-dropdown-item"
+              >
+                <span>Logout</span>
+              </button>
               </div>
             ) : null}
           </div>

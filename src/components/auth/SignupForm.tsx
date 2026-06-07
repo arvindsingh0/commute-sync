@@ -1,5 +1,6 @@
 "use client";
 
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
 export default function SignupForm() {
@@ -60,6 +61,11 @@ export default function SignupForm() {
 
       const data =
         await response.json();
+
+        if (response.ok) {
+  window.location.href =
+    "/dashboard";
+}
 
       if (!response.ok) {
         setError(
@@ -149,9 +155,11 @@ export default function SignupForm() {
     }
     className="absolute right-3 top-1/2 -translate-y-1/2"
   >
-    {showPassword
-      ? "🙈"
-      : "👁️"}
+   {showPassword ? (
+            <EyeOff size={18} />
+          ) : (
+            <Eye size={18} />
+          )}
   </button>
 </div>
 

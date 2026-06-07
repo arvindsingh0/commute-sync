@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { signupSchema } from "@/validations/auth.validation";
+import { generateToken } from "@/auth/jwt";
 import { createUser } from "@/services/auth.service";
 
 export async function POST(req: Request) {
@@ -14,15 +15,42 @@ export async function POST(req: Request) {
       validatedData
     );
 
-    return NextResponse.json(
-      {
-        success: true,
-        userId: user.id,
+    const token = generateToken(
+  user.id
+);
+
+const response =
+  NextResponse.json(
+    {
+      success: true,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
       },
-      {
-        status: 201,
-      }
-    );
+    },
+    {
+      status: 201,
+    }
+  );
+
+response.cookies.set(
+  "token",
+  token,
+  {
+    httpOnly: true,
+    secure:
+      process.env.NODE_ENV ===
+      "production",
+    sameSite: "strict",
+    maxAge:
+      60 * 60 * 24 * 7,
+    path: "/",
+  }
+);
+
+return response;
+
   } catch (error) {
 
   if (error instanceof ZodError) {

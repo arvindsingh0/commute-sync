@@ -1,58 +1,61 @@
 import Navbar from "@/components/layout/Navbar";
-import SyncCard from "@/components/sync/SyncCard";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import HomeHero from "@/components/HomeHero";
+import SearchBar from "@/components/SearchBar";
+import Link from "next/link";
 
 export default function DashboardPage() {
   return (
-    <>
+    <main className="min-h-screen bg-slate-50">
       <Navbar />
 
-      <main className="mx-auto max-w-7xl p-6">
-        {/* Hero Section */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold">
-            Find commuters heading your way
-          </h1>
+      <HomeHero />
 
-          <p className="mt-2 text-muted-foreground">
-            Save money by coordinating rides with professionals
-            traveling on similar routes.
-          </p>
+      <SearchBar />
+
+      <section className="bg-blue-50 py-4">
+        <h2 className="text-center text-lg font-semibold text-blue-900">
+          One Sync, Endless Possibilities
+        </h2>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-14">
+        <div className="mb-10 flex items-center justify-between">
+          <h2 className="text-4xl font-bold text-slate-900">
+            Recent Routes
+          </h2>
+
+                  <Link
+          href="/create-sync"
+          className="rounded-xl bg-blue-600 px-5 py-3 font-medium text-white hover:bg-blue-700"
+        >
+          Create Sync
+        </Link>
         </div>
 
-        {/* Search Card */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="grid gap-4 md:grid-cols-4">
-              <Input placeholder="Leaving From" />
-              <Input placeholder="Going To" />
-              <Input placeholder="Departure Time" />
+        <div className="grid gap-6 md:grid-cols-3">
+          <button className="rounded-2xl bg-white p-6 text-left shadow-md hover:shadow-lg">
+            IT Park → Clement Town
+          </button>
 
-              <div className="flex gap-2">
-                <Button className="flex-1">
-                  Search
-                </Button>
-
-                <Button variant="outline">
-                  Create Sync
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Sync Feed */}
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          <SyncCard />
-          <SyncCard />
-          <SyncCard />
-          <SyncCard />
-          <SyncCard />
-          <SyncCard />
+          <button className="rounded-2xl bg-white p-6 text-left shadow-md hover:shadow-lg">
+            GMS Road → Doon University
+          </button>
         </div>
-      </main>
-    </>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          <button className="rounded-2xl bg-white p-6 text-left shadow-md hover:shadow-lg">
+            IT Park → Clement Town
+          </button>
+
+          <button className="rounded-2xl bg-white p-6 text-left shadow-md hover:shadow-lg">
+            GMS Road → Doon University
+          </button>
+
+          <button className="rounded-2xl bg-white p-6 text-left shadow-md hover:shadow-lg">
+            Rajpur Road → IT Park
+          </button>
+        </div>
+      </section>
+    </main>
   );
 }
