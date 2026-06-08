@@ -95,10 +95,13 @@ async function handleLogout() {
                   <UserRound aria-hidden="true" />
                   <span>My Profile</span>
                 </Link>
-                <Link href="/dashboard" className="account-dropdown-item">
-                  <Route aria-hidden="true" />
-                  <span>My Syncs</span>
-                </Link>
+              <Link
+              href="/my-syncs"
+              className="account-dropdown-item"
+            >
+              <Route />
+              <span>My Syncs</span>
+            </Link>
 
                 <button
                 type="button"

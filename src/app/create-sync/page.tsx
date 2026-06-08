@@ -157,7 +157,7 @@ async function handleSubmit(
       return;
     }
 
-    router.push("/dashboard");
+    router.push("/my-syncs");
   } catch {
     setError(
       "Something went wrong"
