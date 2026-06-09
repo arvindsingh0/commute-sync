@@ -128,6 +128,8 @@ export async function searchSyncs(
   const endOfDay = new Date(date);
   endOfDay.setHours(23, 59, 59, 999);
 
+  const now = new Date();
+
   const syncs = await prisma.sync.findMany({
     where: {
       creatorId: {
@@ -142,7 +144,9 @@ export async function searchSyncs(
         equals: toLocation,
         mode: "insensitive",
       },
-
+      departureTime: {
+        gte: now,
+      },
       syncDate: {
         gte: startOfDay,
         lte: endOfDay,
