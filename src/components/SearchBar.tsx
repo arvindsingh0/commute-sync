@@ -2,6 +2,7 @@
 
 import { ArrowRightLeft, CalendarDays, MapPin, Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 function getJourneyDateOptions() {
   const today = new Date();
@@ -29,15 +30,40 @@ export default function SearchBar() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [journeyDate, setJourneyDate] = useState(dateOptions[0]?.value ?? "");
-
+  const router = useRouter();
+ 
   const swapRoute = () => {
     setFrom(to);
     setTo(from);
   };
 
+  function handleSubmit(
+  event: React.FormEvent
+) {
+  event.preventDefault();
+
+  if (
+    !from.trim() ||
+    !to.trim()
+  ) {
+    return;
+  }
+
+  router.push(
+    `/search?from=${encodeURIComponent(
+      from
+    )}&to=${encodeURIComponent(
+      to
+    )}&date=${journeyDate}`
+  );
+}
+
   return (
     <div className="landing-search-container">
-      <form className="landing-search-card" onSubmit={(event) => event.preventDefault()}>
+              <form
+          className="landing-search-card"
+          onSubmit={handleSubmit}
+        > 
         <div className="landing-search-grid">
           <label className="landing-search-field">
             <MapPin className="landing-search-icon text-blue-600" />
