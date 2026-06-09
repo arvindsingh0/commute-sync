@@ -117,7 +117,8 @@ export async function createSync(
 export async function searchSyncs(
   fromLocation: string,
   toLocation: string,
-  syncDate: string
+  syncDate: string,
+  currentUserId: string
 ) {
   const date = new Date(syncDate);
 
@@ -129,6 +130,9 @@ export async function searchSyncs(
 
   const syncs = await prisma.sync.findMany({
     where: {
+      creatorId: {
+        not: currentUserId,
+     },
       fromLocation: {
         equals: fromLocation,
         mode: "insensitive",
@@ -147,6 +151,7 @@ export async function searchSyncs(
       status: {
         in: ["OPEN", "FULL"],
       },
+      
     },
 
     orderBy: {

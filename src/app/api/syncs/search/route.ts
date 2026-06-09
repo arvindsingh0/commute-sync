@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-
+import { getCurrentUserId } from "@/auth/auth";
 import { searchSyncs } from "@/services/sync.service";
 
 export async function GET(
@@ -34,12 +34,17 @@ export async function GET(
     );
   }
 
+  const userId = await getCurrentUserId();
+  
+  await getCurrentUserId();
   const syncs =
     await searchSyncs(
       fromLocation,
       toLocation,
-      syncDate
+      syncDate,
+      userId!
     );
+
 
   return NextResponse.json({
     success: true,
