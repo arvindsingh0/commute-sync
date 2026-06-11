@@ -91,7 +91,7 @@ async function handleLogout() {
 
             {isAccountOpen ? (
               <div className="account-dropdown">
-                <Link href="/dashboard" className="account-dropdown-item">
+               <Link href="/profile" className="account-dropdown-item">
                   <UserRound aria-hidden="true" />
                   <span>My Profile</span>
                 </Link>

@@ -30,6 +30,9 @@ export async function GET() {
         email: true,
         isVerified: true,
         phoneNumber: true,
+        gender: true,
+        company: true,
+        profileImage: true,
       },
     });
 
