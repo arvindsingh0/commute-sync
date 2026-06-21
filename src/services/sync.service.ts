@@ -170,6 +170,14 @@ export async function searchSyncs(
           isVerified: true,
         },
       },
+      requests: {
+        where: {
+          senderId: currentUserId,
+        },
+        select: {
+          status: true,
+        },
+      },
     },
   });
 
@@ -312,15 +320,19 @@ if (
 }
 return prisma.$transaction(
   async (tx) => {
-    await tx.syncRequest.update({
+    const updateResult = await tx.syncRequest.updateMany({
       where: {
         id: requestId,
+        status: "PENDING",
       },
-
       data: {
         status: "ACCEPTED",
       },
     });
+
+    if (updateResult.count === 0) {
+      throw new Error("REQUEST_NOT_PENDING");
+    }
 
     const updatedSync =
       await tx.sync.update({
@@ -415,23 +427,19 @@ export async function rejectRequest(
     );
   }
 
-  if (
-    request.status !== "PENDING"
-  ) {
-    throw new Error(
-      "REQUEST_NOT_PENDING"
-    );
-  }
-
-  await prisma.syncRequest.update({
+  const updateResult = await prisma.syncRequest.updateMany({
     where: {
       id: requestId,
+      status: "PENDING",
     },
-
     data: {
       status: "REJECTED",
     },
   });
+
+  if (updateResult.count === 0) {
+    throw new Error("REQUEST_NOT_PENDING");
+  }
 
   return {
     success: true,
@@ -467,4 +475,45 @@ export async function getMyRequests(
     });
 
   return requests;
+}
+
+export async function getSyncWithRequests(
+  syncId: string,
+  userId: string
+) {
+  const sync = await prisma.sync.findUnique({
+    where: {
+      id: syncId,
+    },
+    include: {
+      requests: {
+        include: {
+          sender: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phoneNumber: true,
+              profileImage: true,
+              company: true,
+              gender: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
+
+  if (!sync) {
+    throw new Error("SYNC_NOT_FOUND");
+  }
+
+  if (sync.creatorId !== userId) {
+    throw new Error("UNAUTHORIZED");
+  }
+
+  return sync;
 }

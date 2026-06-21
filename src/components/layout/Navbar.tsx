@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp, CircleUserRound, Route, UserRound } from "lucid
 import { useEffect, useState } from "react";
 import AuthModal from "@/components/auth/AuthModal";
 
+
 type CurrentUser = {
   id: string;
   name: string | null;
