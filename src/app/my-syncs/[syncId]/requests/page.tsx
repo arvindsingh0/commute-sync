@@ -143,6 +143,7 @@ export default function RequestsPage({
                 {new Date(sync.departureTime).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
+                  hour12: true,
                 })} on {new Date(sync.syncDate).toLocaleDateString(undefined, {
                   weekday: "long",
                   month: "long",

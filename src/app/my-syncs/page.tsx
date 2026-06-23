@@ -71,10 +71,13 @@ export default function MySyncsPage() {
     loadData();
   }, []);
 
+  // Filter both syncs and requests so that they are hidden if the departure time has passed
   const upcomingSyncs = syncs.filter(
-    (sync) =>
-      new Date(sync.syncDate) >=
-      new Date(new Date().setHours(0, 0, 0, 0))
+    (sync) => new Date(sync.departureTime) >= new Date()
+  );
+
+  const upcomingRequests = myRequests.filter(
+    (req) => new Date(req.sync.departureTime) >= new Date()
   );
 
   return (
@@ -184,6 +187,7 @@ export default function MySyncsPage() {
                               {new Date(sync.departureTime).toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
+                                hour12: true,
                               })}
                             </span>
                           </div>
@@ -235,7 +239,7 @@ export default function MySyncsPage() {
           )
         ) : (
           /* REQUESTED TAB */
-          myRequests.length === 0 ? (
+          upcomingRequests.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-12 text-center shadow-sm">
               <p className="text-lg font-medium text-slate-600">
                 You haven't requested to join any syncs yet.
@@ -246,7 +250,7 @@ export default function MySyncsPage() {
             </div>
           ) : (
             <div className="grid gap-6">
-              {myRequests.map((req) => (
+              {upcomingRequests.map((req) => (
                 <div
                   key={req.id}
                   className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md"
@@ -294,6 +298,7 @@ export default function MySyncsPage() {
                             {new Date(req.sync.departureTime).toLocaleTimeString([], {
                               hour: "2-digit",
                               minute: "2-digit",
+                              hour12: true,
                             })}
                           </span>
                         </div>
