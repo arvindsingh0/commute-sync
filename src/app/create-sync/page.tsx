@@ -1,7 +1,11 @@
 "use client";
 import Navbar from "@/components/layout/Navbar";
 
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import { useRouter } from "next/navigation";
   
 export default function CreateSyncPage() 
@@ -10,6 +14,9 @@ export default function CreateSyncPage()
   const [fromLocation, setFromLocation] =
     useState("");
 
+  const [userGender, setUserGender] =
+  useState("");
+  
   const [toLocation, setToLocation] =
     useState("");
 
@@ -34,7 +41,25 @@ export default function CreateSyncPage()
 
     const router = useRouter();
 
-     const upcomingDays = Array.from(
+    useEffect(() => {
+     async function loadUser() {
+     const response =
+      await fetch("/api/me");
+
+    const data =
+      await response.json();
+
+    if (data.success) {
+      setUserGender(
+        data.user.gender
+      );
+    }
+   }
+  loadUser();
+}, []);
+
+
+  const upcomingDays = Array.from(
 
   { length: 4 },
 
@@ -279,33 +304,35 @@ async function handleSubmit(
             />
             </div>
 
-            <div className="flex items-center justify-between rounded-xl border p-4">
-  <span className="font-medium">
-    Women Only
-  </span>
+ {userGender === "FEMALE" && (
+  <div className="flex items-center justify-between rounded-xl border p-4">
+    <span className="font-medium">
+      Women Only
+    </span>
 
-  <button
-    type="button"
-    onClick={() =>
-      setWomenOnly(
-        !womenOnly
-      )
-    }
-    className={`relative h-7 w-14 rounded-full transition ${
-      womenOnly
-        ? "bg-blue-600"
-        : "bg-slate-300"
-    }`}
-  >
-    <span
-      className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${
+    <button
+      type="button"
+      onClick={() =>
+        setWomenOnly(
+          !womenOnly
+        )
+      }
+      className={`relative h-7 w-14 rounded-full transition ${
         womenOnly
-          ? "left-8"
-          : "left-1"
+          ? "bg-blue-600"
+          : "bg-slate-300"
       }`}
-    />
-  </button>
-</div>
+    >
+      <span
+        className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${
+          womenOnly
+            ? "left-8"
+            : "left-1"
+        }`}
+      />
+    </button>
+  </div>
+)}
 
             <div>
               <label className="mb-2 block font-medium">
