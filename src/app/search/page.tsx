@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
@@ -134,21 +134,27 @@ function SearchPageInner() {
                       </div>
 
                       {/* Creator Info */}
-                      <div className="flex items-center gap-2.5">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600">
-                          {sync.creator.name[0]?.toUpperCase() || "C"}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-slate-700">
-                            {sync.creator.name}
-                            {sync.creator.isVerified && (
-                              <span className="ml-1 text-xs text-blue-500 font-semibold">
-                                ✓ Verified
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                      </div>
+                        <Link
+                          href={`/users/${sync.creator.id}`}
+                          className="inline-flex items-center gap-2.5 rounded-lg transition hover:bg-slate-50 p-1"
+                        >
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600">
+                            {sync.creator.name[0]?.toUpperCase() || "C"}
+                          </div>
+
+                          <div>
+                            <p className="text-sm font-medium text-slate-700">
+                              {sync.creator.name}
+
+                              {sync.creator.isVerified && (
+                                <span className="ml-1 text-xs font-semibold text-blue-500">
+                                  ✓ Verified
+                                </span>
+                              )}
+                            </p>
+                            
+                          </div>
+                        </Link>
 
                       {/* Details Grid */}
                       <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500">
