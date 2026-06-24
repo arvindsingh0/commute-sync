@@ -187,7 +187,8 @@ export async function searchSyncs(
 
 export async function requestToJoinSync(
   syncId: string,
-  senderId: string
+  senderId: string,
+  message?: string
 ) {
   const sync = await prisma.sync.findUnique({
     where: {
@@ -232,6 +233,7 @@ export async function requestToJoinSync(
       data: {
         syncId,
         senderId,
+        message,
       },
     });
 

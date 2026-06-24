@@ -28,7 +28,15 @@ function SearchPageInner() {
   const searchParams = useSearchParams();
   const [syncs, setSyncs] = useState<Sync[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showRequestModal, setShowRequestModal] =
+  useState(false);
 
+const [selectedSyncId, setSelectedSyncId] =
+  useState("");
+
+const [requestMessage, setRequestMessage] =
+  useState("");
+  
   useEffect(() => {
     async function loadSyncs() {
       const from = searchParams.get("from");
@@ -55,10 +63,16 @@ function SearchPageInner() {
     loadSyncs();
   }, [searchParams]);
 
-  async function sendRequest(syncId: string) {
+  async function sendRequest()  {
     try {
-      const response = await fetch(`/api/syncs/${syncId}/request`, {
+      const response = await fetch(`/api/syncs/${selectedSyncId}/request`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: requestMessage,
+        }),
       });
 
       const data = await response.json();
@@ -66,11 +80,15 @@ function SearchPageInner() {
       if (data.success) {
         setSyncs((prevSyncs) =>
           prevSyncs.map((sync) =>
-            sync.id === syncId
+            sync.id === selectedSyncId
               ? { ...sync, requests: [{ status: "PENDING" }] }
               : sync
           )
         );
+        setShowRequestModal(false);
+        setRequestMessage("");
+        setSelectedSyncId("");
+
       } else {
         alert(data.message || "Failed to send request");
       }
@@ -83,6 +101,51 @@ function SearchPageInner() {
   return (
     <>
       <Navbar />
+                  {showRequestModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+                <h2 className="mb-4 text-xl font-semibold">
+                  Request to Join
+                </h2>
+
+                <p className="mb-3 text-sm text-slate-500">
+                  Add an optional message for the creator.
+                </p>
+
+                <textarea
+                  rows={4}
+                  value={requestMessage}
+                  onChange={(e) =>
+                    setRequestMessage(
+                      e.target.value
+                    )
+                  }
+                  placeholder="Give a brief heads up about yourself or your commute"
+                  className="w-full rounded-xl border p-3"
+                />
+
+                <div className="mt-4 flex justify-end gap-3">
+                  <button
+                    onClick={() =>
+                      setShowRequestModal(
+                        false
+                      )
+                    }
+                    className="rounded-xl border px-4 py-2"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={sendRequest}
+                    className="rounded-xl bg-blue-600 px-4 py-2 text-white"
+                  >
+                    Send Request
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
       <main className="mx-auto max-w-4xl px-6 py-12">
         <div className="mb-10 text-center md:text-left">
@@ -152,7 +215,7 @@ function SearchPageInner() {
                                 </span>
                               )}
                             </p>
-                            
+
                           </div>
                         </Link>
 
@@ -204,7 +267,11 @@ function SearchPageInner() {
                         </div>
                       ) : (
                         <button
-                          onClick={() => sendRequest(sync.id)}
+                            onClick={() => {
+                              setSelectedSyncId(sync.id);
+                              setRequestMessage("");
+                              setShowRequestModal(true);
+                          }}
                           className="w-full sm:w-auto rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-sm transition-all duration-250 hover:bg-blue-700 hover:shadow-md active:scale-[0.98]"
                         >
                           Request to Join

@@ -31,11 +31,16 @@ export async function POST(
 
   try {
     const { syncId } = await params;
+    const body =
+    await req.json().catch(
+    () => ({})
+    );
 
     const request =
       await requestToJoinSync(
         syncId,
-        userId
+        userId,
+        body.message,
       );
 
     return NextResponse.json(
