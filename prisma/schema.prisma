@@ -83,6 +83,8 @@ model SyncRequest {
 
   status RequestStatus @default(PENDING)
 
+  message String?
+
   createdAt DateTime @default(now())
 
   @@unique([syncId, senderId])
