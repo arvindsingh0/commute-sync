@@ -197,27 +197,36 @@ const [requestMessage, setRequestMessage] =
                       </div>
 
                       {/* Creator Info */}
-                        <Link
-                          href={`/users/${sync.creator.id}`}
-                          className="inline-flex items-center gap-2.5 rounded-lg transition hover:bg-slate-50 p-1"
-                        >
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600">
-                            {sync.creator.name[0]?.toUpperCase() || "C"}
-                          </div>
+                        <div className="inline-flex items-center gap-2.5 rounded-lg transition p-1">
+                          <Link
+                            href={`/users/${sync.creator.id}`}
+                            className="inline-flex items-center gap-2.5 rounded-lg transition hover:bg-slate-50 p-1"
+                          >
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600">
+                              {sync.creator.name[0]?.toUpperCase() || "C"}
+                            </div>
 
-                          <div>
-                            <p className="text-sm font-medium text-slate-700">
-                              {sync.creator.name}
+                            <div>
+                              <p className="text-sm font-medium text-slate-700">
+                                {sync.creator.name}
 
-                              {sync.creator.isVerified && (
-                                <span className="ml-1 text-xs font-semibold text-blue-500">
-                                  ✓ Verified
-                                </span>
-                              )}
-                            </p>
+                                {sync.creator.isVerified && (
+                                  <span className="ml-1 text-xs font-semibold text-blue-500">
+                                    ✓ Verified
+                                  </span>
+                                )}
+                              </p>
 
-                          </div>
-                        </Link>
+                            </div>
+                          </Link>
+
+                          <Link
+                            href={`/syncs/${sync.id}/chat`}
+                            className="ml-2 inline-flex items-center gap-2 rounded-lg border px-2 py-1 text-sm text-slate-700 hover:bg-slate-50"
+                          >
+                            Message
+                          </Link>
+                        </div>
 
                       {/* Details Grid */}
                       <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500">

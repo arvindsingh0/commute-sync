@@ -20,6 +20,7 @@ type SyncRequest = {
   status: "PENDING" | "ACCEPTED" | "REJECTED";
   sender: Sender;
   createdAt: string;
+  message?: string;
 };
 
 type SyncDetails = {
@@ -207,6 +208,18 @@ export default function RequestsPage({
                             </span>
                           </div>
                         </div>
+
+                          {request.message && (
+                            <div className="rounded-xl bg-slate-50 p-3 text-sm border border-slate-100">
+                              <p className="font-semibold text-slate-700 mb-1">
+                                Message
+                              </p>
+
+                              <p className="text-slate-600">
+                                {request.message}
+                              </p>
+                            </div>
+                          )}
 
                         {/* Contact & Company Details */}
                         <div className="space-y-2 text-sm text-slate-600">
