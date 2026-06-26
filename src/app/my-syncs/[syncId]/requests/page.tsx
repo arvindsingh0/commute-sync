@@ -2,6 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import Navbar from "@/components/layout/Navbar";
+import { MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { ArrowLeft, Check, X, Mail, Phone, Building2, User } from "lucide-react";
 
@@ -13,6 +14,7 @@ type Sender = {
   profileImage?: string;
   company?: string;
   gender: string;
+  isVerified: boolean;
 };
 
 type SyncRequest = {
@@ -194,63 +196,66 @@ export default function RequestsPage({
                     >
                       <div className="space-y-4">
                         {/* Profile Header */}
-                        <div className="flex items-center gap-3">
+                       <Link
+                          href={`/users/${request.sender.id}`}
+                          className="inline-flex items-center gap-3 rounded-lg p-1 transition hover:bg-slate-50"
+                        >
                           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-50 font-bold text-indigo-600 text-lg">
                             {request.sender.name[0]?.toUpperCase() || "U"}
                           </div>
+
                           <div>
                             <h3 className="font-bold text-slate-900">
                               {request.sender.name}
                             </h3>
-                            <span className="inline-flex items-center gap-1 text-xs text-slate-400 capitalize">
-                              <User className="h-3 w-3" />
-                              {request.sender.gender.toLowerCase()}
-                            </span>
-                          </div>
-                        </div>
+                            {request.sender.isVerified && (
+                              <span className="ml-1 text-xs font-semibold text-blue-500">
+                                ✓ Verified
+                              </span>
+                            )}
 
-                          {request.message && (
-                            <div className="rounded-xl bg-slate-50 p-3 text-sm border border-slate-100">
-                              <p className="font-semibold text-slate-700 mb-1">
-                                Message
+                            
+                          </div>
+                        </Link>
+
+                         <Link
+                          href={`/syncs/${sync.id}/chat`}
+                          className="block rounded-xl border border-slate-100 bg-slate-50 p-3 transition hover:bg-slate-100"
+                        >
+                          {request.message ? (
+                            <>
+                              <p className="mb-1 text-sm font-semibold text-slate-700">
+                                Heads up
                               </p>
 
-                              <p className="text-slate-600">
+                              <p className="text-sm text-slate-600">
                                 {request.message}
                               </p>
+                            </>
+                          ) : (
+                            <div className="flex items-center justify-center gap-2 py-2 text-slate-600">
+                              <MessageCircle className="h-4 w-4" />
+                              <span className="font-medium">
+                                Message
+                              </span>
                             </div>
                           )}
+                        </Link>
 
                         {/* Contact & Company Details */}
-                        <div className="space-y-2 text-sm text-slate-600">
-                          {request.sender.company && (
-                            <div className="flex items-center gap-2">
-                              <Building2 className="h-4 w-4 text-slate-400" />
-                              <span>{request.sender.company}</span>
-                            </div>
-                          )}
-                          <div className="flex items-center gap-2">
-                            <Mail className="h-4 w-4 text-slate-400" />
-                            <a
-                              href={`mailto:${request.sender.email}`}
-                              className="hover:text-blue-600 transition-colors"
-                            >
-                              {request.sender.email}
-                            </a>
+                        {request.status === "ACCEPTED" && (
+                          <div className="space-y-2 text-sm text-slate-600">
+                            {request.sender.phoneNumber && (
+                              <div className="flex items-center gap-2">
+                                <Phone className="h-4 w-4 text-slate-400" />
+                                <a href={`tel:${request.sender.phoneNumber}`}>
+                                  {request.sender.phoneNumber}
+                                </a>
+                              </div>
+                            )}
                           </div>
-                          {request.sender.phoneNumber && (
-                            <div className="flex items-center gap-2">
-                              <Phone className="h-4 w-4 text-slate-400" />
-                              <a
-                                href={`tel:${request.sender.phoneNumber}`}
-                                className="hover:text-blue-600 transition-colors"
-                              >
-                                {request.sender.phoneNumber}
-                              </a>
-                            </div>
-                          )}
+                        )}
                         </div>
-                      </div>
 
                       {/* Request Action Buttons */}
                       <div className="mt-6 border-t border-slate-50 pt-4 flex items-center justify-between">

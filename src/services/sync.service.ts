@@ -499,6 +499,7 @@ export async function getSyncWithRequests(
               profileImage: true,
               company: true,
               gender: true,
+              isVerified: true,
             },
           },
         },
